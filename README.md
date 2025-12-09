@@ -1,10 +1,10 @@
-````md
+
 # 🎮 Dodge Game
 
 A small desktop game built with **Electron**, **HTML**, **CSS**, and **JavaScript**.  
 Choose your character, dodge the falling obstacles, and survive as long as possible!
 
----
+
 
 ## 🖼️ Screenshots
 
@@ -14,7 +14,7 @@ Choose your character, dodge the falling obstacles, and survive as long as possi
 ### Gameplay
 <img src="./screenshots/gameplay.png" width="450">
 
----
+
 
 ## 🚀 How to Run the Game
 
