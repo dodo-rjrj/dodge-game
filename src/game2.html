@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+  <title>Choose Your Player</title>
+  <style>
+    body {
+      font-family: "VT323", monospace;
+      font-weight: 600;
+      background-image: url('./img/terrain.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;     /* full screen height for centering */
+  margin: 0;
+    }
+
+    /* Main container: 3 rows layout */
+    .container {
+      display: grid;
+      grid-template-rows: 1fr auto 1fr; /* Top, middle, bottom */
+        border: #90cdf1 outset 25px;
+        background-color: rgba(255, 255, 255, 0.4); /* semi-transparent white */
+        border-radius: 15px;
+         width: 400px;       /* fixed width */
+        height: 400px;  
+        left:25%;
+        position: absolute;
+        /*overflow: hidden;*/
+    }
+
+  
+    /* Optional: button styling */
+    button {
+      padding: 15px 50px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 14px;
+      background-color: #ff6f61;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.8;
+    }
+
+    /* Title style */
+    h1 {
+      color: rgb(49, 56, 58);
+      
+      text-align: center; /* centers the text horizontally */
+    }
+  
+#obstacle {
+  position: absolute;
+  width: 125px;
+  height: 40px;
+  background-color: #eaf1f2; /* bright golden yellow */
+  border: 3px dotted #f6f6f6; /* darker yellow border for depth */
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.5), inset -2px -2px 5px rgba(255,255,255,0.3);
+ 
+  transition: transform 0.2s;
+}
+
+/* Optional: when obstacle moves, make it “bounce” a little for style */
+#obstacle.moving {
+  transform: translateY(5px);
+}
+
+
+  </style>
+</head>
+<body>
+    
+  <div class="container">
+    <div class="row">
+      <h1>AVOID THE OBSTACLES!</h1>
+    </div>
+   <div id="player" style="position:absolute; top:340px; left:200px; width:50px; height:50px; border: #90cdf1 dotted 5px;
+        border-radius: 10px;background-color: rgba(255, 255, 255, 0.5); "></div>
+<div id="obstacle" style="position:absolute; top:363px; left:0px; width:100px; height:30px; background:rgb(111, 179, 238);"></div>
+
+  </div>
+  <div id="scores" style="position:absolute; top:10px; left:10px; color:#fff; font-family:'VT323', monospace;">
+   <h1> SCORES:000 </h1></div>
+<div id="gameOverModal" style="
+    display:none;
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    background-color: rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+">
+  <div style="
+      background-color:#fff;
+      padding:30px;
+      text-align:center;
+      border-radius:15px;
+      font-family:'VT323', monospace;
+  ">
+    <h2>GAME OVER</h2>
+    <button id="restartBtn" style="margin:10px;">Restart</button>
+    <button id="quitBtn" style="margin:10px;">Quit</button>
+  </div>
+</div>
+  <script>
+const obstacles =['A', 'B', 'C', 'D'];
+
+
+let obstacle = document.getElementById('obstacle');
+
+let player = document.getElementById('player');
+
+const playerimg = localStorage.getItem('selectedPlayer') || 'player1'; 
+player.style.backgroundImage = `url('./img/${playerimg}.png')`;
+player.style.backgroundSize = 'cover'; // make it fill the div
+player.style.backgroundRepeat = 'no-repeat';
+let playerX = 200;
+
+let obstacleY = 0;
+let obstacleSpeed = 5;
+function getRandomObstacle() {
+  const index = Math.random() ;
+  if (index <= 1/4) {obstacle.style.left =0+'px';}
+  else if ((index <= 2/4) && (index >1/4)) {obstacle.style.left =100+'px';}
+  else if ((index > 2/4) && (index <=3/4)) {obstacle.style.left =200+'px';}
+  else if (index >3/4) {obstacle.style.left =300+'px';}
+}
+
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowLeft') playerX -= 40;
+  if(e.key === 'ArrowRight') playerX += 40;
+   playerX = Math.max(0, Math.min(playerX, 400 - 60));
+  player.style.left = playerX + 'px';
+});
+
+   let scores=0;
+  
+       document.getElementById('scores').innerHTML=`<h1> SCORES:${scores.toString().padStart(3,'0')} </h1>`;
+ 
+function gameOver() {
+    // Stop the obstacle loop by NOT calling requestAnimationFrame
+    document.getElementById('gameOverModal').style.display = 'flex';
+
+    document.getElementById('restartBtn').onclick = () => {
+        // Reset player and obstacle
+        playerX = 200;
+        obstacleY = 0;
+        obstacle.style.top = '0px';
+        obstacleSpeed = 5;
+        scores = 0;
+        document.getElementById('scores').innerHTML=`<h1> SCORES:${scores.toString().padStart(3,'0')} </h1>`;
+
+        getRandomObstacle();
+        document.getElementById('gameOverModal').style.display = 'none';
+        moveObstacle(); // restart movement
+    };
+
+    document.getElementById('quitBtn').onclick = () => {
+        window.location.href = 'game.html'; // go back to player selection
+    };
+}
+
+function moveObstacle() {
+    obstacleY += obstacleSpeed;
+    if (obstacleY > 363) {
+        obstacleY = 0;
+        getRandomObstacle();
+        scores += 1;
+        document.getElementById('scores').innerHTML=`<h1> SCORES:${scores.toString().padStart(3,'0')} </h1>`;
+         if (scores % 10 === 0) {
+            obstacleSpeed += 1;
+        }
+    }
+    obstacle.style.top = obstacleY + 'px';
+
+    if (parseInt(obstacle.style.top) >= 340) { 
+        if (playerX < parseInt(obstacle.style.left) + 100 && 
+            playerX + 60 > parseInt(obstacle.style.left)) {
+           gameOver();
+
+            
+
+            return; // stop loop after game over
+        }
+    }
+
+      requestAnimationFrame(moveObstacle);
+}
+moveObstacle();
+ </script>
+</body>
+</html>

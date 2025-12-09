@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+  <title>Choose Your Player</title>
+  <style>
+    body {
+      font-family: "VT323", monospace;
+      font-weight: 600;
+      background-image: url('./img/terrain.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;     /* full screen height for centering */
+  margin: 0;
+  overflow: hidden;
+    }
+
+    /* Main container: 3 rows layout */
+    .container {
+      display: grid;
+      grid-template-rows: 1fr auto 1fr; /* Top, middle, bottom */
+        border: #90cdf1 outset 25px;
+        background-color: rgba(255, 255, 255, 0.4); /* semi-transparent white */
+        border-radius: 15px;
+         width: 400px;       /* fixed width */
+        height: 400px;  
+        left:45%
+    }
+
+    /* Generic row style */
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Middle row with 3 columns for players */
+    .middle {
+      display: grid;
+      grid-template-columns: repeat(3, auto); /* 3 columns */
+      justify-content: center; /* center horizontally */
+      align-items: center; /* center vertically */
+    }
+
+    /* Player images */
+    .middle > img {
+      width:80px;
+      height: 80px;
+      margin: 0 20px; /* equal space between images */
+      cursor: pointer; /* makes it obvious that it's clickable */
+      border: #90cdf1 dotted 5px;
+        border-radius: 50px;
+    }
+    .middle > img:hover {
+      transform: scale(1.2); /* slightly enlarge on hover */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* optional: subtle shadow */
+    }
+    .selected {
+ border: #90cdf1 dotted 5px;  /* border when clicked */
+  transform: scale(1.2);     /* slightly bigger */
+   background-color: rgba(255, 255, 255, 0.5); /* semi-transparent white */
+}
+    /* Optional: button styling */
+    button {
+      padding: 15px 50px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 14px;
+      background-color: #ff6f61;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.8;
+    }
+
+    /* Title style */
+    h1 {
+      color: rgb(49, 56, 58);
+      
+      text-align: center; /* centers the text horizontally */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top row: title -->
+    <div class="row">
+      <h1>choose your player</h1>
+    </div>
+
+    <div class="row middle">
+      <img src="./img/player1.png" alt="player1" onclick="selectPlayer(this)">
+      <img src="./img/player2.png" alt="player2" onclick="selectPlayer(this)">
+      <img src="./img/player3.png" alt="player3" onclick="selectPlayer(this)">
+    </div>
+
+    <div class="row">
+      <button onclick="startGame();">start playing</button>
+    </div>
+  </div>
+
+  <script>
+
+let selectedPlayer = null;
+
+function selectPlayer(player) {
+    document.querySelectorAll('.middle img').forEach(img => {
+    img.classList.remove('selected');
+        });
+     player.classList.add('selected');
+    selectedPlayer = player;
+
+};
+ function startGame() {
+    if (selectedPlayer) {
+        window.location.href = "game2.html"; 
+        localStorage.setItem('selectedPlayer', selectedPlayer.alt); 
+        
+    } else {
+      alert("Please select a player first!");
+    }
+  }
+
+  </script>
+</body>
+</html>
