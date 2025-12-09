@@ -9,7 +9,7 @@ Choose your character, dodge the falling obstacles, and survive as long as possi
 ## 🖼️ Screenshots
 
 ### Character selection
-<img src="./screenshots/menu.png" width="450">
+<img src="screenshots/menu.png" width="450">
 
 ### Gameplay
 <img src="./screenshots/gameplay.png" width="450">
